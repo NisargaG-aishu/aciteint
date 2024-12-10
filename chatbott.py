@@ -1,4 +1,11 @@
+import sys
 import os
+
+# Add the current directory to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+
 import json
 import nltk
 import ssl
@@ -28,13 +35,26 @@ except LookupError:
 # Initialize components
 @st.cache_resource
 def initialize_chatbot():
-    file_path = os.path.abspath("./intents.json")
-    with open(file_path, "r") as file:
-        intents = json.load(file)
-    return ChatBot(intents)
+    file_path = os.path.join(os.path.dirname(__file__), "intents.json")
+    st.write(f"Looking for intents.json at: {file_path}")  # Debug line
+    try:
+        with open(file_path, "r", encoding='utf-8') as file:
+            intents = json.load(file)
+            if not isinstance(intents, dict) or "intents" not in intents:
+                raise ValueError("Invalid intents.json format")
+            return ChatBot(intents)
+    except FileNotFoundError:
+        st.error(f"Could not find intents.json at {file_path}")
+        raise
+    except json.JSONDecodeError as e:
+        st.error(f"Invalid JSON in intents.json: {str(e)}")
+        raise
+    except Exception as e:
+        st.error(f"Error initializing chatbot: {str(e)}")
+        raise
 
 def main():
-    st.title("Intents of Chatbot using NLP")
+    st.title(" Chatbot using NLP")
     
     chatbot = initialize_chatbot()
     chat_history = ChatHistory()
@@ -72,8 +92,23 @@ def main():
         display_about_section()
 
 def display_about_section():
-    st.write("The goal of this project is to create a chatbot that can understand and respond to user input based on intents...")
-    # Rest of the about section content...
+    st.write("The goal of this project is to create a chatbot that can understand and respond to user input based on intents. The chatbot is built using Natural Language Processing (NLP) library and Logistic Regression.")
+
+    st.subheader("Project Overview:")
+    st.write("""
+    The project is divided into two parts:
+    1. NLP techniques and Logistic Regression algorithm is used to train the chatbot on labeled intents and entities.
+    2. For building the Chatbot interface, Streamlit web framework is used to build a web-based chatbot interface.
+    """)
+
+    st.subheader("Features:")
+    st.write("""
+    - Natural language understanding using NLTK
+    - Machine learning-based intent classification
+    - Conversation history tracking
+    - Simple and intuitive web interface
+    - Real-time responses
+    """)
 
 if __name__ == '__main__':
     main() 
