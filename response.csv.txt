@@ -1,0 +1,9 @@
+{
+    "hello": "Hi there! How can I help you today?",
+    "how are you": "I'm doing well, thank you for asking!",
+    "what is your name": "I'm a chatbot created to help you.",
+    "bye": "Goodbye! Have a great day!",
+    "help": "I can help you with basic questions and conversation. Just type your message!",
+    "weather": "I'm sorry, I don't have access to weather information.",
+    "thank you": "You're welcome!"
+} 
